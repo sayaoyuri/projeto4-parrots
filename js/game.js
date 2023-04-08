@@ -1,6 +1,6 @@
 const cardList = ['./assets/images/bobrossparrot.gif','./assets/images/explodyparrot.gif', './assets/images/fiestaparrot.gif', './assets/images/metalparrot.gif', './assets/images/revertitparrot.gif', './assets/images/tripletsparrot.gif', './assets/images/unicornparrot.gif'];
-// const cardsDisplay = cardList.concat(cardList);
-// cardsDisplay.sort(comparador); // Após esta linha, a minhaArray estará embaralhada
+let sortedCards = [];
+
 
 // Esta função pode ficar separada do código acima, onde você preferir
 function comparador() { 
@@ -14,34 +14,44 @@ let cardQt;
 
 let quantityCheck;
 
-do {
-  cardQt = parseInt(prompt("Quantidade de cartas?"));
-
-  if(cardQt % 2 === 0 && cardQt >= 4 && cardQt <= 14) {
-    checkQuantity = false;
-  } else {
-    checkQuantity = true;
-  }
-} while (checkQuantity);
-
-const cardsContainer = document.querySelector('.cards-container');
-cardsContainer.innerHTML = '';
-for (let i = 0; i < cardQt; i++) {
-  cardsContainer.innerHTML += 
-  `<div class="card">
-    <div class="front-face face">
-      <img data-test="face-down-image" src="./assets/images/back.png" alt="">
-    </div>
-    <div class="back-face face">
-      <img src="${cardsDisplay[i]}">
-    </div>
-  </div>`
-  ;
+function startGame (action) {
+  do {
+    cardQt = parseInt(prompt("Quantidade de cartas?"));
   
+    if(cardQt % 2 === 0 && cardQt >= 4 && cardQt <= 14) {
+      checkQuantity = false;
+
+      distributeCards();
+    } else {
+      checkQuantity = true;
+    }
+  } while (checkQuantity);
+}
+
+function distributeCards () {
+  sortedCards = cardList.slice(0, cardQt/2);
+  sortedCards = sortedCards.concat(sortedCards);
+  sortedCards.sort(comparador);
+
+  const cardsContainer = document.querySelector('.cards-container');
+  cardsContainer.innerHTML = '';
+  for (let i = 0; i < cardQt; i++) {
+    cardsContainer.innerHTML += 
+      `<div class="card">
+        <div class="front-face face">
+          <img data-test="face-down-image" src="./assets/images/back.png" alt="">
+        </div>
+        <div class="back-face face">
+          <img src="${sortedCards[i]}">
+        </div>
+      </div>`;
+  }
 }
 
 let firstPick = "";
 let secondPick = "";
+
+startGame();
 
 const cards = document.querySelectorAll('.card').forEach((element) => {
   element.addEventListener('click', pickCard);  
@@ -54,12 +64,13 @@ function pickCard (card) {
       card.currentTarget.children[0].classList.add("active");
       card.currentTarget.children[1].classList.add("active");
       card.currentTarget.children[1].children[0].setAttribute('data-test', 'face-up-image');
+      round++;
     } else if (firstPick !== '' && secondPick == '') {
       secondPick = card.currentTarget;
       secondPick.children[0].classList.add('active');
       secondPick.children[1].classList.add('active');
       secondPick.children[1].children[0].setAttribute('data-test', 'face-up-image');
-
+      round++;
       checkPicks();
     }
 
@@ -72,12 +83,14 @@ function checkPicks (card) {
     firstPick.removeEventListener('click', pickCard);
     secondPick.removeEventListener('click', pickCard);
 
-    
     setTimeout(() => {
       firstPick = '';
       secondPick = '';
     }, 1200);
-    checkWin();
+    // setTimeout(checkwin, 500);
+    setTimeout(() => {
+      checkWin();
+    }, 500);
   } else {
 
     setTimeout(clearPicks, 1000);
@@ -99,6 +112,6 @@ function clearPicks () {
 
 function checkWin () {
   if(score === cardQt / 2) {
-    alert('VITÒRIA');
+    alert(`Você  ganhou em ${round} jogadas!`);
   }
 }
