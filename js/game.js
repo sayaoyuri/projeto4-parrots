@@ -37,7 +37,7 @@ function distributeCards () {
   cardsContainer.innerHTML = '';
   for (let i = 0; i < cardQt; i++) {
     cardsContainer.innerHTML += 
-      `<div class="card">
+      `<div class="card" data-test="card">
         <div class="front-face face">
           <img data-test="face-down-image" src="./assets/images/back.png" alt="">
         </div>
