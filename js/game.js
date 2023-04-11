@@ -58,6 +58,7 @@ const cards = document.querySelectorAll('.card').forEach((element) => {
 });
 
 function pickCard (card) {
+  if (card.currentTarget != firstPick) {
     if (firstPick == '') {
       firstPick = card.currentTarget;
       
@@ -65,7 +66,7 @@ function pickCard (card) {
       card.currentTarget.children[1].classList.add("active");
       card.currentTarget.children[1].children[0].setAttribute('data-test', 'face-up-image');
       round++;
-    } else if (firstPick !== '' && secondPick == '') {
+    } else if (firstPick !== '' && secondPick == '' && card.currentTarget !== secondPick) {
       secondPick = card.currentTarget;
       secondPick.children[0].classList.add('active');
       secondPick.children[1].classList.add('active');
@@ -73,6 +74,8 @@ function pickCard (card) {
       round++;
       checkPicks();
     }
+    
+  }
 
 }
 
